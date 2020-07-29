@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>jVectorMap demo</title>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqvmap/1.5.1/jqvmap.min.css">
+
+  <link rel="stylesheet" href="jquery-jvectormap-2.0.5.css" type="text/css" media="screen"/>
+<body>
+  <div id="world-map" style="width: 600px; height: 400px"></div>
+
+
+    <script src="jquery.js"></script>
+  <script src="jquery-1.8.2.js"></script>
+  <script src="jquery-jvectormap-map.js"></script>
+  <script src="map.js"></script>
+  <script src="jvectormap.js"></script>
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqvmap/1.5.1/jquery.vmap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqvmap/1.5.1/maps/jquery.vmap.world.js"></script>
+
+  <script src="jquery-jvectormap-2.0.5.min.js"></script>
+  <script src="jquery-jvectormap-world-mill.js"></script>
+</head>
+  <script>
+    $(function(){
+      $('#world-map').vectorMap({map: 'world_mill'});
+    });
+  </script>
+</body>
+</html>

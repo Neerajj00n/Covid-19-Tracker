@@ -1,0 +1,412 @@
+<!--
+=========================================================
+* * Black Dashboard - v1.0.1
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/black-dashboard
+* Copyright 2019 Creative Tim (https://www.creative-tim.com)
+
+
+* Coded by Creative Tim
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+-->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<style type="text/css">
+
+.col-md-12 {
+    display: contents;
+}
+
+.card.rd {
+    margin-right: 2%
+}
+
+.card.rd {
+    height: 170px;
+}
+
+.card-chart .chart-area {
+    height: 100% !important; 
+    width: 96%;
+    }
+
+.col-lg-5 {
+    max-width: 37.7% !important;
+}
+
+h2.card-text.con {
+    color:  gold;
+}
+
+h2.card-text.ac {
+    color: cornflowerblue;
+}
+
+h2.card-text.re {
+    color: lightgreen;
+}
+
+h2.card-text.de {
+    color: crimson;
+}
+
+b.new {
+    color: crimson;
+}
+.table-responsive {
+    height: 700px;
+  }
+
+.dt {
+    text-align: center;
+}
+</style>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="apple-touch-icon" sizes="76x76" href="{% static 'assets/img/covid.png' %}">
+  <link rel="icon" type="image/png" href="{% static 'assets/img/covid.png' %}">
+  <title>
+    covid-19 Tracker
+  </title>
+  <!--     Fonts and icons     -->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,600,700,800" rel="stylesheet" />
+  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+  <!-- Nucleo Icons -->
+  <link href="{% static 'assets/css/nucleo-icons.css' %}" rel="stylesheet" />
+  <!-- CSS Files -->
+  <link href="{% static 'assets/css/black-dashboard.css' %}?v=1.0.0" rel="stylesheet" />
+  <!-- CSS Just for demo purpose, don't include it in your project -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+
+  <link rel="stylesheet" href="{% static 'map/jquery-jvectormap-2.0.5.css' %}" type="text/css" media="screen">
+  
+  <script src="{% static 'map/jquery.js' %}"></script>
+
+  <script src="{% static 'map/jquery-jvectormap-2.0.5.min.js' %}"></script>
+  <script src="{% static 'map/jquery-jvectormap-world-mill.js' %}"></script>
+</head>
+
+<body class="">
+  <div class="wrapper">
+    <div class="sidebar" data-color="blue" data-background-color="white">
+      <!--
+        Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red"
+    -->
+      <div class="sidebar-wrapper">
+        <div class="logo">
+          <a href="/" class="simple-text logo-mini">
+          <b><i class="tim-icons icon-world"></i></b>
+          </a>
+          <a href="/" class="simple-text logo-normal">
+            <b>World</b>
+          </a>
+        </div>
+        <ul class="nav">
+          {% for i in covid20 %}
+          <li>
+            <a id="virus" href="{% url 'covid' i.country %}">
+              <i class="tim-icons icon-square-pin"></i>
+              <h5 id="loc" country_id="{{i.id}}"><b>{{ i.country }}</b></h5>
+            </a>
+          </li>
+          {% endfor %}  
+        </ul>
+      </div>
+    </div>
+    <div class="main-panel">
+      <!-- Navbar -->
+
+      <nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent">
+        <div class="container-fluid">
+          <div class="navbar-wrapper">
+            <div class="navbar-toggle d-inline">
+              <button type="button" class="navbar-toggler">
+                <span class="navbar-toggler-bar bar1"></span>
+                <span class="navbar-toggler-bar bar2"></span>
+                <span class="navbar-toggler-bar bar3"></span>
+              </button>
+            </div>
+            <a class="navbar-brand" href="/"><b>COVID-19 Tracker</b></a>
+          </div>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+            <span class="navbar-toggler-bar navbar-kebab"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navigation">
+            <ul class="navbar-nav ml-auto">
+              <li class="search-bar input-group">
+                <button class="btn btn-link" id="search-button" data-toggle="modal" data-target="#searchModal"><i class="tim-icons icon-zoom-split"></i>
+                  <span class="d-lg-none d-md-block">Search</span>
+                </button>
+              </li>
+              
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <div class="modal modal-search fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="SEARCH">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <i class="tim-icons icon-simple-remove"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Navbar -->
+      <div class="content">
+        <div class="row">
+          <div class="col-md-12">
+          
+        <div class="card rd" style="width: 15rem;">
+  <div class="card-body">
+    <h4 class="card-title con">Confirmed</h4>
+    <h6 class="card-subtitle mb-2 text-muted">{{world.country}}</h6>
+    <h2 class="card-text con" id="con">{{world.confirmed}}</h2>
+    
+            <hr>
+              <b class="new"> New cases:  + {{world.new_cases}}</b>
+          </div>
+  </div>
+
+<div class="card rd" style="width: 15rem;">
+  <div class="card-body">
+    <h4 class="card-title ac">Active</h4>
+    <h6 class="card-subtitle mb-2 text-muted">{{world.country}}</h6>
+    <h2 class="card-text ac" id="ac">{{world.active}}</h2>
+    <hr>
+      <i class="tim-icons icon-simple-add"></i>
+    </div>
+  </div>
+
+<div class="card rd" style="width: 15rem;">
+  <div class="card-body">
+    <h4 class="card-title re">Recoverd</h4>
+    <h6 class="card-subtitle mb-2 text-muted">{{world.country}}</h6>
+    <h2 class="card-text re">{{world.recovered}}</h2>
+    <hr>
+      <i class="tim-icons icon-simple-add"></i>
+  </div>
+</div>
+<div class="card rd" style="width: 15rem;">
+  <div class="card-body">
+    <h4 class="card-title de">Deaths</h4>
+    <h6 class="card-subtitle mb-2 text-muted">{{world.country}}</h6>
+    <h2 class="card-text de">{{world.deaths}}</h2>
+    <hr>
+      <b class="new">New Deaths:   + {{world.new_deaths}}</b>  
+  </div>
+</div>
+</div>
+<div class="col-md-12"> 
+          <div id="world-map" style="width: 640px; height: 427px"></div>
+
+          <div class="col-lg-5">
+            <div class="card card-chart">
+              <div class="card-header">
+                <h5 class="card-category">{{world.country}} Chart</h5>
+                
+              </div>
+              <div class="card-body">
+                <div class="chart-area">
+                  <canvas id="myChart" width="400" height="400"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+</div>
+<div class="col-md-12">
+            <div class="card ok">
+              <div class="card-header">
+                <h4 class="card-title">Country stats</h4>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table tablesorter " id="">
+                    <thead class=" text-primary">
+                      <tr>
+                        <th>
+                          Country
+                        </th>
+                        <th>
+                          Confirmed
+                        </th>
+                        <th>
+                          New Cases
+                        </th>
+                        <th>
+                          active
+                        </th>
+                        <th>
+                          Recoverd
+                        </th>
+                        <th>
+                          Deaths
+                        </th>
+                        <th>
+                          New Deaths
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    {% for i in covid20 %}
+                      <tr>
+                        <td>
+                          {{i.country}}
+                        </td>
+                        <td>
+                          {{i.confirmed}}
+                        </td>
+                        <td>
+                          {% if i.new_cases == 0 %}
+                           {{i.new_cases}}
+                           {% else %}
+                           +{{i.new_cases}}
+                          {% endif %}
+                        </td>
+                        <td>
+                          {{i.active}}
+                        </td>
+                        <td>
+                          {{i.recovered}}
+                        </td>
+                        <td>
+                          {{i.deaths}}
+                        </td>
+                        <td>
+                           {% if i.new_cases == 0 %}
+                            {{i.new_deaths}}
+                           {% else %}
+                           + {{i.new_deaths}}
+
+                          {% endif %}
+                          
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+        <div class="dt">
+        <small>-=[Data update every Hour..]=-</small>
+        </div>
+      </div>
+      <footer class="footer">
+        <div class="container-fluid">
+          <ul class="nav">
+            <li class="nav-item">
+              <a href="https://www.nerdinshell.com" class="nav-link">
+                Covid-19  Tracker
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="javascript:void(0)" class="nav-link">
+                About Us
+              </a>
+            </li>
+            
+          </ul>
+          <div class="copyright">
+            ©
+            <script>
+              document.write(new Date().getFullYear())
+            </script>-made with <i class="tim-icons icon-heart-2"></i> by
+            <a href="www.nerdinshell.com" target="_blank">Nerdinshell</a> for a better web.
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!--   Core JS Files   -->
+    {{ js|safe }}
+
+<script>
+var data2 = JSON.parse("{{data2|escapejs}}");
+
+var ctx = document.getElementById('myChart');
+
+data = {
+    datasets: [{
+        data: data2 ,
+        backgroundColor: [
+            '#ff6463', '#ffcd56', '#36a2eb',
+          ]
+        
+    }],
+    
+    labels: [
+        'Deaths',
+        'Active',
+        'Recoverd'
+    ], 
+};
+
+var myChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: data ,
+    options: {
+      responsive: true,
+
+       }
+});
+</script>
+
+
+
+<script type="text/javascript">
+
+var data = JSON.parse("{{data|escapejs}}");
+  
+$('#world-map').vectorMap({map: 'world_mill', backgroundColor:' #27293d',zoomAnimate: true,
+      series: {
+      regions: [{
+      values: data,
+      scale: ['#FFFFFF', '#ff0000'],
+      normalizeFunction: 'polynomial'
+    }]
+  },
+  onRegionTipShow: function(e, el, code){
+    el.html(el.html()+' (confirmed cases - '+data[code]+')');
+  }
+});
+
+</script>
+
+<script src="{% static 'assets/js/core/jquery.min.js' %}"></script>
+  <script src="{% static 'assets/js/core/popper.min.js' %}"></script>
+  <script src="{% static 'assets/js/core/bootstrap.min.js' %}"></script>
+  <script src="{% static 'assets/js/plugins/perfect-scrollbar.jquery.min.js' %}"></script>
+  <!--  Google Maps Plugin    -->
+  <!-- Place this tag in your head or just before your close body tag. -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
+  <!-- Chart JS -->
+  <script src="{% static 'assets/js/plugins/chartjs.min.js' %}"></script>
+  <!--  Notifications Plugin    -->
+  <script src="{% static 'assets/js/plugins/bootstrap-notify.js' %}"></script>
+  <!-- Control Center for Black Dashboard: parallax effects, scripts for the example pages etc -->
+  <script src="{% static 'assets/js/black-dashboard.min.js' %}?v=1.0.0"></script><!-- Black Dashboard DEMO methods, don't include it in your project! -->
+  
+  <script type="text/javascript">
+
+   
+
+</body>
+
+</html>
