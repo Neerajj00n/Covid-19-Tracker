@@ -3,4 +3,3 @@ schedule==0.6.0
 Django==3.0.8
 covid==2.3.0
 gunicorn
-whitenoise
