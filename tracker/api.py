@@ -10,7 +10,7 @@ import threading
 from celery.schedules import crontab
 from celery.task import periodic_task
 
-@periodic_task(run_every=crontab(minute='*/1', hour='*/1'))
+@periodic_task(run_every=crontab(minute=0, hour='*/1'))
 def data(): 
     try:
         covid = Covid(source="worldometers")
