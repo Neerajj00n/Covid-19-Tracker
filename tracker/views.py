@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .api import data
+from .api import *
 from json import dumps
 import requests
 # Create your views here.
