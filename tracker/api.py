@@ -2,15 +2,16 @@ import requests
 import json
 from .models import *
 from covid import Covid
-#from schedule import Scheduler
-#import schedule
+from schedule import Scheduler
+import schedule
 import time 
 import threading
+import datetime
 #from background_task import background
-from celery.schedules import crontab
-from celery.task import periodic_task
+#from celery.schedules import crontab
+#from celery.task import periodic_task
 
-@periodic_task(run_every=crontab(minute=0, hour='*/1'))
+#@periodic_task(run_every=crontab(minute=0, hour='*/1'))
 def data(): 
     try:
         covid = Covid(source="worldometers")
@@ -24,6 +25,7 @@ def data():
             cov.active=i['active']
             cov.deaths=i['deaths']
             cov.recovered=i['recovered']
+
             cov.save()
             print('ok')
         df = 'success'
@@ -32,7 +34,7 @@ def data():
         result = "Failed"
         return result 
 
-'''
+
 def run_continuously(self, interval=1):
     """Continuously run, while executing pending jobs at each elapsed
     time interval.
@@ -67,7 +69,7 @@ def start_scheduler():
     scheduler.every(60).minutes.do(data)
     scheduler.run_continuously()
 
-#start_scheduler()
+
 
 '''
 
@@ -81,3 +83,4 @@ def start_scheduler():
 #    df = 'done'
 #    return  df     
 #
+'''

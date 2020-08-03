@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '6aj0@^a_v2lye*jk0ngq_@_1d3c#=7c=tikb@^qjkiqi)g_3&x'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False 
+DEBUG = False
 
 ALLOWED_HOSTS = ['covid19-track3r.herokuapp.com',"127.0.0.1"]
 
@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tracker',
-    'djcelery'
     ]
 
 MIDDLEWARE = [
