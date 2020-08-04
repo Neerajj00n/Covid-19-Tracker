@@ -11,8 +11,8 @@ def home(request):
     now = datetime.now(timezone.utc)
     dif = now - date.updated_on
     hour = dif.seconds / 3600
-    if hour > 1.5:
-        start_scheduler()
+    if hour > 1:
+        data()
     else:
         pass    
     return redirect('covid', country='World')
