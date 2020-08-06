@@ -6,17 +6,18 @@ from covid import Covid
 import schedule
 import time 
 import threading
+#import pandas as pd
 import datetime
-from threading import Thread
+#from threading import Thread
 
-def start_new_thread(function):
-    def decorator(*args, **kwargs):
-        t = Thread(target = function, args=args, kwargs=kwargs)
-        t.daemon = True
-        t.start()
-    return decorator
+#def start_new_thread(function):
+#    def decorator(*args, **kwargs):
+#        t = Thread(target = function, args=args, kwargs=kwargs)
+#        t.daemon = True
+#        t.start()
+#    return decorator
 
-@start_new_thread
+#@start_new_thread
 def data(): 
     try:
         covid = Covid(source="worldometers")
@@ -32,13 +33,12 @@ def data():
             cov.recovered=i['recovered']
 
             cov.save()
-            print('ok')
+
         df = 'success'
         return  df
     except:
         result = "Failed"
         return result 
-
 
 
 '''
