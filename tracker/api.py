@@ -1,84 +1,54 @@
 import requests
 import json
 from .models import *
-from covid import Covid
-#from schedule import Scheduler
-import schedule
 import time 
-import threading
-#import pandas as pd
+import pandas as pd
 import datetime
-#from threading import Thread
-
-#def start_new_thread(function):
-#    def decorator(*args, **kwargs):
-#        t = Thread(target = function, args=args, kwargs=kwargs)
-#        t.daemon = True
-#        t.start()
-#    return decorator
-
-#@start_new_thread
-def data(): 
-    try:
-        covid = Covid(source="worldometers")
-        cv = covid.get_data()
-        for i in cv:
-            cov = Covid19.objects.get(country=i['country'])
-            cov.new_cases = i['new_cases']
-            cov.new_deaths = i['new_deaths']
-            cov.country = i['country']
-            cov.confirmed=i['confirmed']
-            cov.active=i['active']
-            cov.deaths=i['deaths']
-            cov.recovered=i['recovered']
-
-            cov.save()
-
-        df = 'success'
-        return  df
-    except:
-        result = "Failed"
-        return result 
 
 
-'''
-def run_continuously(self, interval=1):
-    """Continuously run, while executing pending jobs at each elapsed
-    time interval.
-    @return cease_continuous_run: threading.Event which can be set to
-    cease continuous run.
-    Please note that it is *intended behavior that run_continuously()
-    does not run missed jobs*. For example, if you've registered a job
-    that should run every minute and you set a continuous run interval
-    of one hour then your job won't be run 60 times at each interval but
-    only once.
-    """
 
-    cease_continuous_run = threading.Event()
+def daily_report(date_string=None):
+    # Reports aggegrade data, dating as far back to 01-22-2020
+    # If passing arg, must use above date formatting '01-22-2020'
+    report_directory = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/'
+    
+    if date_string is None: 
+        yesterday = datetime.date.today() - datetime.timedelta(days=2)
+        file_date = yesterday.strftime('%m-%d-%Y')
+    else: 
+        file_date = date_string 
+    
+    df = pd.read_csv(report_directory + file_date + '.csv', dtype={"FIPS": str})
+    return df
 
-    class ScheduleThread(threading.Thread):
+def daily_confirmed():
+    # returns the daily reported cases for respective date, 
+    # segmented globally and by country
+    df = pd.read_csv('https://covid.ourworldindata.org/data/ecdc/new_cases.csv')
+    return df
 
-        @classmethod
-        def run(cls):
-            while not cease_continuous_run.is_set():
-                self.run_pending()
-                time.sleep(interval)
 
-    continuous_thread = ScheduleThread()
-    continuous_thread.setDaemon(True)
-    continuous_thread.start()
-    return cease_continuous_run
+def daily_deaths():
+    # returns the daily reported deaths for respective date
+    df = pd.read_csv('https://covid.ourworldindata.org/data/ecdc/new_deaths.csv')
+    return df
 
-Scheduler.run_continuously = run_continuously
 
-def start_scheduler():
-    scheduler = Scheduler()
-    scheduler.every(2).minutes.do(data)
-    scheduler.run_continuously()
+def confirmed_report():
+    # Returns time series version of total cases confirmed globally
+    df = pd.read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv')
+    return df
+
+def deaths_report():
+    # Returns time series version of total deaths globally
+    df = pd.read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv')
+    return df
+
+def recovered_report():
+    # Return time series version of total recoveries globally
+    df = pd.read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv')
+    return d
 
 
 
 
-
-
-'''

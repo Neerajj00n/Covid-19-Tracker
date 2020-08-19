@@ -109,11 +109,11 @@ b.new {
           </a>
         </div>
         <ul class="nav">
-          {% for i in covid20 %}
+          {% for i in covid20.itertuples %}
           <li>
-            <a id="virus" href="{% url 'covid' i.country %}">
+            <a id="virus" href="{% url 'covid' i.Country %}">
               <i class="tim-icons icon-square-pin"></i>
-              <h5 id="loc" country_id="{{i.id}}"><b>{{ i.country }}</b></h5>
+              <h5 id="loc" country_id="{{i.id}}"><b>{{ i.Country }}</b></h5>
             </a>
           </li>
           {% endfor %}  
@@ -172,8 +172,8 @@ b.new {
         <div class="card rd" style="width: 15rem;">
   <div class="card-body">
     <h4 class="card-title con">Confirmed</h4>
-    <h6 class="card-subtitle mb-2 text-muted">{{world.country}}</h6>
-    <h2 class="card-text con" id="con">{{world.confirmed}}</h2>
+    <h6 class="card-subtitle mb-2 text-muted">{{world.Country}}</h6>
+    <h2 class="card-text con" id="con">{{world.Confirmed}}</h2>
     
             <hr>
               <b class="new"> New cases:  + {{world.new_cases}}</b>
@@ -183,8 +183,8 @@ b.new {
 <div class="card rd" style="width: 15rem;">
   <div class="card-body">
     <h4 class="card-title ac">Active</h4>
-    <h6 class="card-subtitle mb-2 text-muted">{{world.country}}</h6>
-    <h2 class="card-text ac" id="ac">{{world.active}}</h2>
+    <h6 class="card-subtitle mb-2 text-muted">{{world.Country}}</h6>
+    <h2 class="card-text ac" id="ac">{{world.Active}}</h2>
     <hr>
       <i class="tim-icons icon-simple-add"></i>
     </div>
@@ -193,8 +193,8 @@ b.new {
 <div class="card rd" style="width: 15rem;">
   <div class="card-body">
     <h4 class="card-title re">Recoverd</h4>
-    <h6 class="card-subtitle mb-2 text-muted">{{world.country}}</h6>
-    <h2 class="card-text re">{{world.recovered}}</h2>
+    <h6 class="card-subtitle mb-2 text-muted">{{world.Country}}</h6>
+    <h2 class="card-text re">{{world.Recovered}}</h2>
     <hr>
       <i class="tim-icons icon-simple-add"></i>
   </div>
@@ -202,10 +202,10 @@ b.new {
 <div class="card rd" style="width: 15rem;">
   <div class="card-body">
     <h4 class="card-title de">Deaths</h4>
-    <h6 class="card-subtitle mb-2 text-muted">{{world.country}}</h6>
-    <h2 class="card-text de">{{world.deaths}}</h2>
+    <h6 class="card-subtitle mb-2 text-muted">{{world.Country}}</h6>
+    <h2 class="card-text de">{{world.Deaths}}</h2>
     <hr>
-      <b class="new">New Deaths:   + {{world.new_deaths}}</b>  
+      <b class="new">Death Rate:   + {{world.Death_rate}}</b>  
   </div>
 </div>
 </div>
@@ -242,9 +242,9 @@ b.new {
                         <th>
                           Confirmed
                         </th>
-                        <th>
+                        <!--th>
                           New Cases
-                        </th>
+                        </th-->
                         <th>
                           active
                         </th>
@@ -255,43 +255,37 @@ b.new {
                           Deaths
                         </th>
                         <th>
-                          New Deaths
+                          Death Rate 
                         </th>
                       </tr>
                     </thead>
                     <tbody>
-                    {% for i in covid20 %}
+                    {% for i in covid20.itertuples %}
                       <tr>
                         <td>
-                          {{i.country}}
+                          {{i.Country}}
                         </td>
                         <td>
-                          {{i.confirmed}}
+                          {{i.Confirmed}}
                         </td>
-                        <td>
+                        <!--td>
                           {% if i.new_cases == 0 %}
                            {{i.new_cases}}
                            {% else %}
                            +{{i.new_cases}}
                           {% endif %}
+                        </td-->
+                        <td>
+                          {{i.Active}}
                         </td>
                         <td>
-                          {{i.active}}
+                          {{i.Recovered}}
                         </td>
                         <td>
-                          {{i.recovered}}
+                          {{i.Deaths}}
                         </td>
                         <td>
-                          {{i.deaths}}
-                        </td>
-                        <td>
-                           {% if i.new_cases == 0 %}
-                            {{i.new_deaths}}
-                           {% else %}
-                           + {{i.new_deaths}}
-
-                          {% endif %}
-                          
+                         {{i.Death_rate}}
                         </td>
                       </tr>
                       {% endfor %}
