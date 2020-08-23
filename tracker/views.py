@@ -20,14 +20,18 @@ def dash(request,country):
 	else:
 		Region = world[world['Country'] == country].iloc[0]
 	
-	data = mapdata(world)
-	datajson = dumps(data)
-	print(type(Region))
-	data2 = [int(Region['Deaths']),int(Region['Active']),int(Region['Recovered'])]		
+	map_data = mapdata(world)
+	mapdata_json = dumps(map_data)
 
-	d2json = dumps(data2)
+	donught_data = [int(Region['Deaths']),int(Region['Active']),int(Region['Recovered'])]
+	d2json = dumps(donught_data)
+	
+	line_chart = chart(country)
+	line = line_chart.to_dict(orient='list')
+	
+	#chart2json=dumps(line)
 
-	return render(request, 'dashboard.html', {'data':datajson,'covid20':world,"world":Region,"data2":d2json})
+	return render(request, 'dashboard.html', {'data':mapdata_json,'world':world,"Region":Region,"data2":d2json,'line_data':line})
 
 
 def mapdata(world):
@@ -47,20 +51,104 @@ def global_cases():
     df = df.groupby('Country').sum().reset_index()
     df.sort_values(by=['Confirmed'],ascending=False, inplace=True)
 
-    rate = [f'{(i.Deaths / i.Confirmed)*100:.02f}%' for i in df.itertuples()] 
- 	
-    df['Death_rate'] = rate
- 
+    death_rate = [f'{(i.Deaths / i.Confirmed)*100:.02f}%' for i in df.itertuples()]
+    recovery_rate = [f'{(i.Recovered / i.Confirmed)*100:.02f}%' for i in df.itertuples()]
+
+    df['Death_rate'] = death_rate
+    df['Recovery_rate'] = recovery_rate
+
     return df
  
    
 def world_data(world):
 	global_data = world.sum()
-	global_rate = f'{(global_data.Deaths / global_data.Confirmed)*100:.02f}%'
-	Region = {'Country': 'World','Confirmed':global_data.Confirmed,'Deaths':global_data.Deaths,'Recovered':global_data.Recovered,'Active':global_data.Active, 'Death_rate':global_rate} 	
+
+	death_rate = f'{(global_data.Deaths / global_data.Confirmed)*100:.02f}%'
+	recovery_rate = f'{(global_data.Recovered / global_data.Confirmed)*100:.02f}%'	
+	
+	Region = {'Country': 'World','Confirmed':global_data.Confirmed,'Deaths':global_data.Deaths,'Recovered':global_data.Recovered,'Active':global_data.Active, 'Death_rate':death_rate,'Recovery_rate':recovery_rate} 	
 
 	return Region
+
+
+def recovered(Country):	
+	re = recovered_report()
+	if Country == 'World':
+		df4 = re[re.columns[4:]].sum().reset_index()
+	else:
+		df4 = re[re['Country/Region']==Country].sum().reset_index()[4:]
+
+	df4.rename(columns={0:'recovered'}, inplace=True)
+	return df4
+	
+def deaths(Country):
+	death = deaths_report()
+	
+	if Country == 'World':
+		df5 = death[death.columns[4:]].sum().reset_index()
+	else:
+		df5 = death[death['Country/Region']==Country].sum().reset_index()[4:]
+
+	df5.rename(columns={0:'deaths'}, inplace=True)
+	
+	return df5
+
+def confirmed(Country):
+	conf = confirmed_report()
+	
+	if Country == 'World':
+		df6 = conf[conf.columns[4:]].sum().reset_index()
+	else:
+		df6 = conf[conf['Country/Region']==Country].sum().reset_index()[4:]
+
+	df6.rename(columns={0:'confirmed'}, inplace=True)
+	
+	return df6
+
+def chart(Country):
+	new = pd.merge(confirmed(Country),recovered(Country))
+	All = pd.merge(new,deaths(Country))
+
+	return All
+
+
+
 '''
+def line_chart():
+	chart = {}
+	df_confirmed = daily_confirmed()[["date", "World"]]
+	df_deaths = daily_deaths()[["date", "World"]]
+	
+	df_confirmed['date'] = pd.to_datetime(df_confirmed['date'])
+	df_deaths['date'] = pd.to_datetime(df_deaths['date'])
+	
+	confirm = df_confirmed.groupby(df_confirmed['date'].dt.month).sum()
+	death = df_deaths.groupby(df_deaths['date'].dt.month).sum()
+	
+	#con = [i.World for i in confirm.itertuples()][:-1]
+	#deth = [i.World for i in death.itertuples()][:-1]
+	
+	con = []
+	deth = []
+
+	var = 0
+	var2 = 0
+	for i in confirm.itertuples():
+		var += i.World				
+		con.append(var)
+ 
+	for s in death.itertuples():
+		var2 += s.World				
+		deth.append(var2)
+
+	print(deth)
+
+	chart['confirmed'] = con[:-1]
+	chart['deaths'] = deth[:-1]
+ 
+	return chart
+
+
 def Country_data(request):
 
 	confirmed = confirmed_report()[confirmed_report()['Country/Region'] == 'India'].iloc[:,-1].values[0]

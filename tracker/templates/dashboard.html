@@ -28,15 +28,20 @@
 
 .card.rd {
     height: 170px;
-}
+    width:  240px !important;
+  }
 
 .card-chart .chart-area {
     height: 100% !important; 
-    width: 96%;
     }
 
+.card{
+  width: 98% !important;
+}
+
 .col-lg-5 {
-    max-width: 37.7% !important;
+    max-width: 37.5% !important;
+    padding-right: unset !important;
 }
 
 h2.card-text.con {
@@ -64,6 +69,13 @@ b.new {
 
 .dt {
     text-align: center;
+}
+
+b.green {
+    color: lightgreen;
+}
+.row {
+    margin-left: 0px !important; 
 }
 </style>
 
@@ -109,14 +121,14 @@ b.new {
           </a>
         </div>
         <ul class="nav">
-          {% for i in covid20.itertuples %}
+          {% for i in world.itertuples %}
           <li>
             <a id="virus" href="{% url 'covid' i.Country %}">
               <i class="tim-icons icon-square-pin"></i>
               <h5 id="loc" country_id="{{i.id}}"><b>{{ i.Country }}</b></h5>
             </a>
           </li>
-          {% endfor %}  
+          {% endfor %}
         </ul>
       </div>
     </div>
@@ -172,40 +184,40 @@ b.new {
         <div class="card rd" style="width: 15rem;">
   <div class="card-body">
     <h4 class="card-title con">Confirmed</h4>
-    <h6 class="card-subtitle mb-2 text-muted">{{world.Country}}</h6>
-    <h2 class="card-text con" id="con">{{world.Confirmed}}</h2>
+    <h6 class="card-subtitle mb-2 text-muted">{{Region.Country}}</h6>
+    <h2 class="card-text con" id="con">{{Region.Confirmed}}</h2>
     
             <hr>
-              <b class="new"> New cases:  + {{world.new_cases}}</b>
+              <b class="new tim-icons icon-molecule-40" ></b>
           </div>
   </div>
 
 <div class="card rd" style="width: 15rem;">
   <div class="card-body">
     <h4 class="card-title ac">Active</h4>
-    <h6 class="card-subtitle mb-2 text-muted">{{world.Country}}</h6>
-    <h2 class="card-text ac" id="ac">{{world.Active}}</h2>
+    <h6 class="card-subtitle mb-2 text-muted">{{Region.Country}}</h6>
+    <h2 class="card-text ac" id="ac">{{Region.Active}}</h2>
     <hr>
-      <i class="tim-icons icon-simple-add"></i>
+      <i class="tim-icons icon-sound-wave"></i>
     </div>
   </div>
 
 <div class="card rd" style="width: 15rem;">
   <div class="card-body">
     <h4 class="card-title re">Recoverd</h4>
-    <h6 class="card-subtitle mb-2 text-muted">{{world.Country}}</h6>
-    <h2 class="card-text re">{{world.Recovered}}</h2>
+    <h6 class="card-subtitle mb-2 text-muted">{{Region.Country}}</h6>
+    <h2 class="card-text re">{{Region.Recovered}}</h2>
     <hr>
-      <i class="tim-icons icon-simple-add"></i>
+      <b class="green">Recovery Rate:  {{Region.Recovery_rate}}</b>
   </div>
 </div>
 <div class="card rd" style="width: 15rem;">
   <div class="card-body">
     <h4 class="card-title de">Deaths</h4>
-    <h6 class="card-subtitle mb-2 text-muted">{{world.Country}}</h6>
-    <h2 class="card-text de">{{world.Deaths}}</h2>
+    <h6 class="card-subtitle mb-2 text-muted">{{Region.Country}}</h6>
+    <h2 class="card-text de">{{Region.Deaths}}</h2>
     <hr>
-      <b class="new">Death Rate:   + {{world.Death_rate}}</b>  
+      <b class="new">Death Rate:   + {{Region.Death_rate}}</b>  
   </div>
 </div>
 </div>
@@ -215,7 +227,7 @@ b.new {
           <div class="col-lg-5">
             <div class="card card-chart">
               <div class="card-header">
-                <h5 class="card-category">{{world.country}} Chart</h5>
+                <h5 class="card-category">{{Region.Country}} Chart</h5>
                 
               </div>
               <div class="card-body">
@@ -226,6 +238,10 @@ b.new {
             </div>
           </div>
 </div>
+<div class="card">
+<canvas id="line-chart" width="400" height="190"></canvas>
+</div>
+<br>
 <div class="col-md-12">
             <div class="card ok">
               <div class="card-header">
@@ -260,7 +276,7 @@ b.new {
                       </tr>
                     </thead>
                     <tbody>
-                    {% for i in covid20.itertuples %}
+                    {% for i in world.itertuples %}
                       <tr>
                         <td>
                           {{i.Country}}
@@ -305,12 +321,12 @@ b.new {
         <div class="container-fluid">
           <ul class="nav">
             <li class="nav-item">
-              <a href="https://www.nerdinshell.com" class="nav-link">
+              <a href="/" class="nav-link">
                 Covid-19  Tracker
               </a>
             </li>
             <li class="nav-item">
-              <a href="javascript:void(0)" class="nav-link">
+              <a href="www.nerdinshell.com" class="nav-link">
                 About Us
               </a>
             </li>
@@ -362,7 +378,41 @@ var myChart = new Chart(ctx, {
 });
 </script>
 
+<script type="text/javascript">
+var  line_data = {{line_data|safe}};
 
+new Chart(document.getElementById("line-chart"), {
+
+  type: 'line',
+  data: {
+    labels: line_data.index,
+    datasets: [{ 
+        data: line_data.confirmed,
+        label: "Confirmed",
+        borderColor: "#3e95cd",
+        fill: false
+      }, { 
+        data: line_data.recovered,
+        label: "Recoverd",
+        borderColor: "#3cba9f",
+        fill: false
+      }, { 
+        data: line_data.deaths,
+        label: "Deaths",
+        borderColor: "#c45850",
+        fill: false
+      }
+    ]
+  },
+  options: {
+    title: {
+      display: true,
+      text: 'Covid-19 Cases Rise Chart'
+    }
+  }
+});
+
+</script>
 
 <script type="text/javascript">
 
@@ -396,10 +446,7 @@ $('#world-map').vectorMap({map: 'world_mill', backgroundColor:' #27293d',zoomAni
   <script src="{% static 'assets/js/plugins/bootstrap-notify.js' %}"></script>
   <!-- Control Center for Black Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="{% static 'assets/js/black-dashboard.min.js' %}?v=1.0.0"></script><!-- Black Dashboard DEMO methods, don't include it in your project! -->
-  
-  <script type="text/javascript">
-
-   
+ 
 
 </body>
 
