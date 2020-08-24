@@ -26,12 +26,9 @@ def dash(request,country):
 	donught_data = [int(Region['Deaths']),int(Region['Active']),int(Region['Recovered'])]
 	d2json = dumps(donught_data)
 	
-	line_chart = chart(country)
-	line = line_chart.to_dict(orient='list')
+	line_chart = chart(country).to_dict(orient='list')
 	
-	#chart2json=dumps(line)
-
-	return render(request, 'dashboard.html', {'data':mapdata_json,'world':world,"Region":Region,"data2":d2json,'line_data':line})
+	return render(request, 'dashboard.html', {'data':mapdata_json,'world':world,"Region":Region,"data2":d2json,'line_data':line_chart})
 
 
 def mapdata(world):
