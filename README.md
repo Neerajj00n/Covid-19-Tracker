@@ -1,7 +1,7 @@
 # Covid-19-Tracker
 This is a Covid-19 Data tracking app based on Python/Django.
 
-![Preview](/home/n33raj/Desktop/MacBook Pro 16)
+![Preview](https://github.com/Neerajj00n/Covid-19-Tracker/blob/master/static/assets/img/preview.png)
 
 # pakeges used:
 - Pandas
